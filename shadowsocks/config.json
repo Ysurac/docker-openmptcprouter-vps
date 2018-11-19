@@ -1,0 +1,15 @@
+{
+    "server":["[::0]", "0.0.0.0"],
+    "server_port":65101,
+    "local_port":1081,
+    "mode":"tcp_and_udp",
+    "key":"MySecretKey",
+    "timeout":600,
+    "method":"chacha20",
+    "verbose":0,
+    "prefer_ipv6": false,
+    "fast_open": true,
+    "no_delay": true,
+    "reuse_port": true,
+    "mptcp": true
+}

@@ -30,36 +30,33 @@ services:
         container_name: shadowsocks
         ports:
             - 65101
-        environment:
-            - SERVER_PORT=65101
-            - KEY=${SHADOWSOCKS_KEY}
-            - METHOD=${SHADOWSOCKS_METHOD}
-            - ARGS=${SHADOWSOCKS_OPTIONS}
+        volumes:
+            - ./shadowsocks/config.json:/etc/shadowsocks-libev/config.json
         restart: always
         networks:
             - code-network
-#    mlvpn:
-#        image: ysurac/mlvpn
-#        container_name: mlvpn
-#        ports:
-#            - 65201-65208
-#        restart: always
-#        volumes:
-#            - ./mlvpn/mlvpn0.conf:/etc/mlvpn/mlvpn0.conf
-#        networks:
-#            - code-network
-#    openvpn:
-#        image: kylemanna/openvpn
-#        container_name: openvpn
-#        cap_add:
-#            - NET_ADMIN
-#        ports:
-#            - 65301:65301
-#        restart: always
-#        volumes:
-#            - ./openvpn:/etc/openvpn
-#        networks:
-#            - code-network
+    mlvpn:
+        image: ysurac/docker-mlvpn
+        container_name: mlvpn
+        ports:
+            - 65201-65208
+        restart: always
+        volumes:
+            - ./mlvpn/mlvpn0.conf:/etc/mlvpn/mlvpn0.conf
+        networks:
+            - code-network
+    openvpn:
+        image: kylemanna/openvpn
+        container_name: openvpn
+        cap_add:
+            - NET_ADMIN
+        ports:
+            - 65301:65301
+        restart: always
+        volumes:
+            - ./openvpn:/etc/openvpn
+        networks:
+            - code-network
 
 networks:
     code-network:
