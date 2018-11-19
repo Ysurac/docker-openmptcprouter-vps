@@ -1,0 +1,66 @@
+version: '2'
+services:
+    glorytun-udp:
+        image: ysurac/docker-glorytun
+        container_name: glorytun-udp
+        ports:
+            - 65001:5000/udp
+        environment:
+            - GLORYTUN_IP_LOCAL=10.255.254.1
+            - GLORYTUN_IP_PEER=10.255.254.2
+            - GLORYTUN_KEY=${GLORYTUN_UDP_KEY}
+        restart: always
+        networks:
+            - code-network
+    glorytun-tcp:
+        image: ysurac/docker-glorytun-tcp
+        container_name: glorytun-tcp
+        ports:
+            - 65001:5000/tcp
+        environment:
+            - GLORYTUN_IP_LOCAL=10.255.255.1
+            - GLORYTUN_IP_PEER=10.255.255.2
+            - GLORYTUN_KEY=${GLORYTUN_TCP_KEY}
+            - GLORYTUN_OPTIONS=${GLORYTUN_TCP_OPTIONS}
+        restart: always
+        networks:
+            - code-network
+    shadowsocks-libev:
+        image: ysurac/docker-shadowsocks-libev
+        container_name: shadowsocks
+        ports:
+            - 65101
+        environment:
+            - SERVER_PORT=65101
+            - KEY=${SHADOWSOCKS_KEY}
+            - METHOD=${SHADOWSOCKS_METHOD}
+            - ARGS=${SHADOWSOCKS_OPTIONS}
+        restart: always
+        networks:
+            - code-network
+#    mlvpn:
+#        image: ysurac/mlvpn
+#        container_name: mlvpn
+#        ports:
+#            - 65201-65208
+#        restart: always
+#        volumes:
+#            - ./mlvpn/mlvpn0.conf:/etc/mlvpn/mlvpn0.conf
+#        networks:
+#            - code-network
+#    openvpn:
+#        image: kylemanna/openvpn
+#        container_name: openvpn
+#        cap_add:
+#            - NET_ADMIN
+#        ports:
+#            - 65301:65301
+#        restart: always
+#        volumes:
+#            - ./openvpn:/etc/openvpn
+#        networks:
+#            - code-network
+
+networks:
+    code-network:
+        driver: bridge
