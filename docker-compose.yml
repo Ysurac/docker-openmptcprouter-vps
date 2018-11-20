@@ -3,6 +3,10 @@ services:
     glorytun-udp:
         image: ysurac/docker-glorytun
         container_name: glorytun-udp
+        cap_add:
+            - NET_ADMIN
+        devices:
+            - /dev/net/tun:/dev/net/tun
         ports:
             - 65001:5000/udp
         environment:
@@ -15,6 +19,10 @@ services:
     glorytun-tcp:
         image: ysurac/docker-glorytun-tcp
         container_name: glorytun-tcp
+        cap_add:
+            - NET_ADMIN
+        devices:
+            - /dev/net/tun:/dev/net/tun
         ports:
             - 65001:5000/tcp
         environment:
@@ -35,23 +43,33 @@ services:
         restart: always
         networks:
             - code-network
-    mlvpn:
-        image: ysurac/docker-mlvpn
-        container_name: mlvpn
-        ports:
-            - 65201-65208
-        restart: always
-        volumes:
-            - ./mlvpn/mlvpn0.conf:/etc/mlvpn/mlvpn0.conf
-        networks:
-            - code-network
+#    mlvpn:
+#        image: ysurac/docker-mlvpn
+#        container_name: mlvpn
+#        cap_add:
+#            - NET_ADMIN
+#        devices:
+#            - /dev/net/tun:/dev/net/tun
+#        command: "/usr/local/sbin/mlvpn --config /etc/mlvpn/mlvpn0.conf --user mlvpn -v --debug"
+#        ports:
+#            - 65201-65208
+#        restart: always
+#        volumes:
+#            - ./mlvpn/mlvpn0.conf:/etc/mlvpn/mlvpn0.conf
+#        networks:
+#            - code-network
     openvpn:
-        image: kylemanna/openvpn
+        image: ysurac/docker-openvpn
         container_name: openvpn
         cap_add:
             - NET_ADMIN
+        devices:
+            - /dev/net/tun:/dev/net/tun
         ports:
             - 65301:65301
+        environment:
+            - OPENVPN_IP_LOCAL=10.255.253.1
+            - OPENVPN_IP_PEER=10.255.253.2
         restart: always
         volumes:
             - ./openvpn:/etc/openvpn
